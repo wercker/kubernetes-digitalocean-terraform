@@ -41,7 +41,7 @@ provider "digitalocean" {
 resource "digitalocean_droplet" "k8s_etcd" {
     image = "coreos-stable"
     name = "k8s-etcd"
-    region = "nyc3"
+    region = "ams3"
     size = "512mb"
     user_data = "${file("00-etcd.yaml")}"
     ssh_keys = [
@@ -79,7 +79,7 @@ resource "template_file" "master_yaml" {
 resource "digitalocean_droplet" "k8s_master" {
     image = "coreos-stable"
     name = "k8s-master"
-    region = "nyc3"
+    region = "ams3"
     size = "512mb"
     user_data = "${template_file.master_yaml.rendered}"
     ssh_keys = [
@@ -175,7 +175,7 @@ resource "digitalocean_droplet" "k8s_worker" {
 
     image = "coreos-stable"
     name = "${format("k8s-worker-%02d", count.index + 1)}"
-    region = "nyc3"
+    region = "ams3"
     size = "512mb"
     user_data = "${template_file.worker_yaml.rendered}"
     ssh_keys = [
@@ -264,6 +264,16 @@ resource "null_resource" "deploy_dns_addon" {
             sed -e "s/\$DNS_SERVICE_IP/10.3.0.10/" < 03-dns-addon.yaml > ./secrets/03-dns-addon.yaml.rendered
             until kubectl get pods 2>/dev/null; do printf '.'; sleep 5; done
             kubectl create -f ./secrets/03-dns-addon.yaml.rendered
+EOF
+    }
+}
+
+resource "null_resource" "deploy_dashboard_addon" {
+    depends_on = ["null_resource.setup_kubectl"]
+    provisioner "local-exec" {
+        command = <<EOF
+            until kubectl get pods 2>/dev/null; do printf '.'; sleep 5; done
+            kubectl create -f https://rawgit.com/kubernetes/dashboard/master/src/deploy/kubernetes-dashboard.yaml
 EOF
     }
 }
