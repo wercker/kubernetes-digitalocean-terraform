@@ -1,6 +1,7 @@
 # Kubernetes - Digital Ocean - Terraform
 
-Deploy your Kubernetes cluster in Digital Ocean using Terraform.
+Deploy your Kubernetes cluster in Digital Ocean using Terraform. Also
+adds the Kubernetes dashboard.
 
 ## Disclaimer
 
@@ -10,7 +11,7 @@ Not tested in production yet. Use it at your own risk.
 
 * [Digital Ocean](https://www.digitalocean.com/) account
 * Digital Ocean Token [In DO's settings/tokens/new](https://cloud.digitalocean.com/settings/tokens/new)
-* [Terraform](https://www.terraform.io/)
+* [Terraform](https://www.terraform.io/) (`brew install terraform` on OSX)
 
 Do all the following steps from a development machine. It does not matter _where_ is it, as long as it is connected to the internet. This one will be subsequently used to access the cluster via `kubectl`.
 
@@ -83,6 +84,9 @@ kube-proxy-Y.Y.Y.Y                1/1       Running   0          34s
 kube-proxy-X.X.X.X                1/1       Running   0          2m
 kube-scheduler-X.X.X.X            1/1       Running   0          1m
 ```
+
+## Accessing the dashboard
+Just run `kubectl proxy` and go to `127.0.0.1:8001/ui/`
 
 You are good to go. Now, we can keep on reading to dive into the specifics.
 
